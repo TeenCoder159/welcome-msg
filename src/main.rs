@@ -1,7 +1,6 @@
-use serde::{Serialize, Deserialize};
-use figlet_rs::FIGfont;
 use colored::*;
-use std::io::{self, Write};
+use figlet_rs::FIGfont;
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
 struct Config {
@@ -24,7 +23,9 @@ fn main() {
     let config = Config::load();
 
     let standard_font = match config.font {
-        Some(path) => FIGfont::from_file(&path.replace("~", &std::env::var("HOME").unwrap())).unwrap(),
+        Some(path) => {
+            FIGfont::from_file(&path.replace("~", &std::env::var("HOME").unwrap())).unwrap()
+        }
         None => FIGfont::standard().unwrap(),
     };
 
@@ -34,7 +35,7 @@ fn main() {
     for line in config.lines {
         if let Some(figure) = standard_font.convert(&line) {
             let color = config.color.unwrap_or((255, 255, 255));
-            
+
             for fig_line in figure.to_string().lines() {
                 if do_center {
                     let line_length = fig_line.chars().count();
