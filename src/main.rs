@@ -1,12 +1,14 @@
 use serde::{Serialize, Deserialize};
 use figlet_rs::FIGfont;
 use colored::*;
+use std::io::{self, Write};
 
 #[derive(Serialize, Deserialize)]
 struct Config {
     font: Option<String>,
     lines: Vec<String>,
-    color: Option<(u8, u8, u8)>
+    color: Option<(u8, u8, u8)>,
+    center: Option<bool>, // <-- new field
 }
 
 impl Config {
@@ -19,17 +21,32 @@ impl Config {
 }
 
 fn main() {
-    // Load the standard font
     let config = Config::load();
 
     let standard_font = match config.font {
-        Some(a) => FIGfont::from_file(&a.replace("~", &std::env::var("HOME").unwrap())).unwrap(),
+        Some(path) => FIGfont::from_file(&path.replace("~", &std::env::var("HOME").unwrap())).unwrap(),
         None => FIGfont::standard().unwrap(),
     };
-    
+
+    let term_width = termsize::get().map(|s| s.cols as usize).unwrap_or(80);
+    let do_center = config.center.unwrap_or(false); // default false
+
     for line in config.lines {
-        let figure = standard_font.convert(&line).unwrap();
-        let color = config.color.unwrap_or((0, 0, 0));
-        println!("{}", figure.to_string().color(Color::TrueColor { r: color.0 , g: color.1, b: color.2 }));
+        if let Some(figure) = standard_font.convert(&line) {
+            let color = config.color.unwrap_or((255, 255, 255));
+            
+            for fig_line in figure.to_string().lines() {
+                if do_center {
+                    let line_length = fig_line.chars().count();
+                    let padding = if term_width > line_length {
+                        (term_width - line_length) / 2
+                    } else {
+                        0
+                    };
+                    print!("{:padding$}", "", padding = padding);
+                }
+                println!("{}", fig_line.truecolor(color.0, color.1, color.2));
+            }
+        }
     }
 }

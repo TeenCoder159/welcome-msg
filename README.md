@@ -26,6 +26,7 @@ Example config file:
     "Iron Man"
   ],
   "color": [135, 175, 215]
+  "center": true, (default false)
 }
 ```
 
