@@ -38,6 +38,11 @@ I found a list [here](https://github.com/xero/figlet-fonts/blob/master/Examples.
 ### Lines (minimum 1 is required)
 You can add as many lines as you want.
 
+### Color (optional)
+You can change the color of the text.
+It uses the RGB color format, and will give an error if you do not use the right format
+> See example config above for the correct format
+
 To use the program, you can run the following command:
 
 ```bash

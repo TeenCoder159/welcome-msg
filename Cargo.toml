@@ -2,6 +2,13 @@
 name = "welcome-msg"
 version = "0.1.0"
 edition = "2024"
+authors = ["TeenCoder159"]
+license = "MIT"
+description = "A simple program that prints a welcome message on the terminal."
+repository = "https://github.com/TeenCoder159/welcome-msg"
+readme = "README.md"
+keywords = ["welcome", "message", "terminal", "figlet"]
+categories = ["command-line-utilities"]
 
 [dependencies]
 colored = "3.0.0"
